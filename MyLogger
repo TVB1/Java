@@ -1,0 +1,53 @@
+package com.MySite.sterling.util;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.Mysite.util.XMLUtil;
+import com.yantra.yfc.log.YFCLogCategory;
+
+public class MyLogger extends YFCLogCategory {
+
+	private static MyLoggerCategoryFactory fac = new MyLoggerCategoryFactory();
+
+	public MyLogger(String name) {
+		super(name);
+	}
+
+	public static MyLogger getLogger(Class clazz) {
+		return getLogger(clazz.getName());
+	}
+
+	public static MyLogger getLogger(String name) {
+		return (MyLogger) Logger.getLogger(name, fac);
+	}
+
+	public static MyLogger instance(String name) {
+		MyLogger cat = (MyLogger) Logger.getLogger(name, fac);
+		return cat;
+	}
+
+	
+	public void debug(final String strMessage, final Document indoc) {
+		if (isDebugEnabled()) {
+			super.debug(strMessage + XMLUtil.serialize(indoc));
+		}
+	}
+
+	 
+	public void debug(final String strMessage, final Element inEle) {
+		if (isDebugEnabled()) {
+			super.debug(strMessage + XMLUtil.serialize(inEle));
+		}
+	}
+
+	public static class MyLoggerCategoryFactory implements LoggerFactory {
+		public Logger makeNewLoggerInstance(String name) {
+			return new MyLogger(name);
+		}
+	}
+
+	
+}
